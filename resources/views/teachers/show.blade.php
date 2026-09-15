@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student Details</title>
+    <title>Teacher Details</title>
 
     <style>
         body {
@@ -26,7 +26,6 @@
         td {
             border: 1px solid #ddd;
             padding: 10px;
-            text-align: left;
         }
 
         th {
@@ -86,41 +85,31 @@
 
 <body>
 
-<h1>Student Details</h1>
+<h1>Teacher Details</h1>
 
 <div class="section">
 
     <table class="info">
 
         <tr>
-            <td>University ID</td>
-            <td>{{ $student->University_ID }}</td>
+            <td>Teacher ID</td>
+            <td>{{ $teacher->Teacher_ID }}</td>
         </tr>
 
         <tr>
             <td>Name</td>
-            <td>{{ $student->name }}</td>
+            <td>{{ $teacher->name }}</td>
         </tr>
 
         <tr>
-            <td>Street</td>
-            <td>{{ $student->street ?? 'N/A' }}</td>
-        </tr>
-
-        <tr>
-            <td>City</td>
-            <td>{{ $student->city ?? 'N/A' }}</td>
-        </tr>
-
-        <tr>
-            <td>ZIP</td>
-            <td>{{ $student->zip ?? 'N/A' }}</td>
+            <td>Type</td>
+            <td>{{ $teacher->type ?? 'N/A' }}</td>
         </tr>
 
         <tr>
             <td>Department</td>
             <td>
-                {{ $student->department?->Department_Name ?? 'No Department' }}
+                {{ $teacher->department?->Department_Name ?? 'No Department' }}
             </td>
         </tr>
 
@@ -130,7 +119,7 @@
 
 <div class="section">
 
-    <h2>Student Courses</h2>
+    <h2>Teacher Courses</h2>
 
     <table>
 
@@ -138,15 +127,14 @@
             <tr>
                 <th>Course ID</th>
                 <th>Course Name</th>
-                <th>Semester</th>
-                <th>Teachers</th>
+                <th>Students</th>
                 <th>Action</th>
             </tr>
         </thead>
 
         <tbody>
 
-        @forelse ($student->courses as $course)
+        @forelse ($teacher->courses as $course)
 
             <tr>
 
@@ -154,13 +142,11 @@
 
                 <td>{{ $course->Course_Name }}</td>
 
-                <td>{{ $course->pivot->Semester }}</td>
-
                 <td>
 
-                    @forelse ($course->teachers as $teacher)
+                    @forelse ($course->students as $student)
 
-                        {{ $teacher->name }}
+                        {{ $student->name }}
 
                         @if (!$loop->last)
                             ,
@@ -168,7 +154,7 @@
 
                     @empty
 
-                        No Teacher
+                        No Students
 
                     @endforelse
 
@@ -178,20 +164,22 @@
 
                     <form
                         action="{{ route(
-                            'students.courses.remove',
+                            'teachers.courses.remove',
                             [
-                                'student' => $student->University_ID,
+                                'teacher' => $teacher->Teacher_ID,
                                 'course' => $course->Course_ID
                             ]
                         ) }}"
                         method="POST"
                     >
+
                         @csrf
                         @method('DELETE')
 
                         <button class="btn red">
                             Remove
                         </button>
+
                     </form>
 
                 </td>
@@ -201,7 +189,7 @@
         @empty
 
             <tr>
-                <td colspan="5">
+                <td colspan="4">
                     No Courses Found
                 </td>
             </tr>
@@ -220,8 +208,8 @@
 
     <form
         action="{{ route(
-            'students.courses.add',
-            $student->University_ID
+            'teachers.courses.add',
+            $teacher->Teacher_ID
         ) }}"
         method="POST"
     >
@@ -244,13 +232,6 @@
 
         </select>
 
-        <input
-            type="text"
-            name="Semester"
-            placeholder="Semester"
-            required
-        >
-
         <button class="btn blue">
             Add Course
         </button>
@@ -261,102 +242,8 @@
 
 <div class="section">
 
-    <h2>Student Phones</h2>
-
-    <table>
-
-        <thead>
-            <tr>
-                <th>Phone Number</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-
-        <tbody>
-
-        @forelse ($student->phones as $phone)
-
-            <tr>
-
-                <td>
-                    {{ $phone->Phone_Number }}
-                </td>
-
-                <td>
-
-                    <form
-                        action="{{ route(
-                            'students.phones.remove',
-                            [
-                                'student' => $student->University_ID,
-                                'phoneNumber' => $phone->Phone_Number
-                            ]
-                        ) }}"
-                        method="POST"
-                    >
-
-                        @csrf
-                        @method('DELETE')
-
-                        <button class="btn red">
-                            Remove
-                        </button>
-
-                    </form>
-
-                </td>
-
-            </tr>
-
-        @empty
-
-            <tr>
-                <td colspan="2">
-                    No Phones Found
-                </td>
-            </tr>
-
-        @endforelse
-
-        </tbody>
-
-    </table>
-
-</div>
-
-<div class="add-box">
-
-    <h2>Add Phone</h2>
-
-    <form
-        action="{{ route(
-            'students.phones.add',
-            $student->University_ID
-        ) }}"
-        method="POST"
-    >
-
-        @csrf
-
-        <input
-            type="text"
-            name="Phone_Number"
-            placeholder="Phone Number"
-            required
-        >
-
-        <button class="btn blue">
-            Add Phone
-        </button>
-
-    </form>
-
-</div>
-
-<div class="section">
-
     <a
-        href="{{ route('students.index') }}"
+        href="{{ route('teachers.index') }}"
         class="btn gray"
     >
         Back
@@ -364,8 +251,8 @@
 
     <a
         href="{{ route(
-            'students.edit',
-            $student->University_ID
+            'teachers.edit',
+            $teacher->Teacher_ID
         ) }}"
         class="btn blue"
     >
@@ -374,8 +261,8 @@
 
     <form
         action="{{ route(
-            'students.destroy',
-            $student->University_ID
+            'teachers.destroy',
+            $teacher->Teacher_ID
         ) }}"
         method="POST"
     >

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Department</title>
+    <title>Add User</title>
 
     <style>
         body { font-family: Arial, sans-serif; }
@@ -11,7 +11,7 @@
             margin: 40px auto;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 10px;
             margin: 8px 0;
@@ -37,7 +37,7 @@
 
 <div class="box">
 
-    <h1>Add Department</h1>
+    <h1>Add User</h1>
 
     @if ($errors->any())
         <div class="error">
@@ -48,28 +48,55 @@
     @endif
 
     <form
-        action="{{ route('departments.store') }}"
+        action="{{ route('users.store') }}"
         method="POST"
     >
         @csrf
 
         <input
             type="text"
-            name="Department_Name"
-            placeholder="Department Name"
-            value="{{ old('Department_Name') }}"
+            name="name"
+            placeholder="Name"
+            value="{{ old('name') }}"
             required
         >
+
+        <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value="{{ old('email') }}"
+            required
+        >
+
+        <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+        >
+
+        <select name="role" required>
+            <option value="">Select Role</option>
+
+            <option value="user">
+                User
+            </option>
+
+            <option value="admin">
+                Admin
+            </option>
+        </select>
 
         <button
             type="submit"
             class="btn blue"
         >
-            Add Department
+            Add User
         </button>
 
         <a
-            href="{{ route('departments.index') }}"
+            href="{{ route('users.index') }}"
             class="btn gray"
         >
             Back

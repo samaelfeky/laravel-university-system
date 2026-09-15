@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add Department</title>
-
+    <title>Edit Department</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { font-family: Arial, sans-serif; }
 
@@ -37,7 +37,7 @@
 
 <div class="box">
 
-    <h1>Add Department</h1>
+    <h1>Edit Department</h1>
 
     @if ($errors->any())
         <div class="error">
@@ -48,16 +48,16 @@
     @endif
 
     <form
-        action="{{ route('departments.store') }}"
+        action="{{ route('departments.update', $department->Department_ID) }}"
         method="POST"
     >
         @csrf
+        @method('PUT')
 
         <input
             type="text"
             name="Department_Name"
-            placeholder="Department Name"
-            value="{{ old('Department_Name') }}"
+            value="{{ old('Department_Name', $department->Department_Name) }}"
             required
         >
 
@@ -65,11 +65,11 @@
             type="submit"
             class="btn blue"
         >
-            Add Department
+            Update Department
         </button>
 
         <a
-            href="{{ route('departments.index') }}"
+            href="{{ route('departments.show', $department->Department_ID) }}"
             class="btn gray"
         >
             Back

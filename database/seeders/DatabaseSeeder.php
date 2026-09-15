@@ -1,25 +1,34 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Factories;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
-class DatabaseSeeder extends Seeder
+class UserFactory extends Factory
 {
-    use WithoutModelEvents;
+    protected static ?string $password = null;
 
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
+    public function definition(): array
     {
-        // User::factory(10)->create();
+        return [
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'email_verified_at' => now(),
+            'password' => static::$password ??= Hash::make('password'),
+            'role' => fake()->randomElement([
+                'user',
+                'admin',
+            ]),
+            'remember_token' => Str::random(10),
+        ];
+    }
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+    public function unverified(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'email_verified_at' => null,
         ]);
     }
 }

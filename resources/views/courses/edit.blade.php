@@ -1,28 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Course</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body { font-family: Arial, sans-serif; }
+
+        .box {
+            width: 500px;
+            margin: 40px auto;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            padding: 9px 15px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .blue { background: #00b7e9; }
+        .gray { background: #777; }
+        .error { color: red; }
+    </style>
 </head>
+
 <body>
-    <div class="container my-5">
-        <h2 class="text-primary text-center mb-4">Edit Course</h2>
-        <form action="{{ route('courses.update', $course->Course_ID) }}" method="POST" class="w-50 m-auto border p-4 shadow-sm rounded">
-            @csrf
-            @method('PUT')
-            <div class="mb-3">
-                <label class="form-label">Course Name</label>
-                <input type="text" name="Course_Name" class="form-control" value="{{ $course->Course_Name }}" required>
-            </div>
-            <div class="mb-3">
-                <label class="form-label">Course Fee</label>
-                <input type="number" step="0.01" name="Course_Fee" class="form-control" value="{{ $course->Course_Fee }}" required>
-            </div>
-            <button type="submit" class="btn btn-warning w-100">Update Course</button>
-            <a href="{{ route('courses.index') }}" class="btn btn-secondary w-100 mt-2">Cancel</a>
-        </form>
-    </div>
+
+<div class="box">
+
+    <h1>Edit Course</h1>
+
+    @if ($errors->any())
+        <div class="error">
+            @foreach ($errors->all() as $error)
+                <div>{{ $error }}</div>
+            @endforeach
+        </div>
+    @endif
+
+    <form
+        action="{{ route('courses.update', $course->Course_ID) }}"
+        method="POST"
+    >
+        @csrf
+        @method('PUT')
+
+        <input
+            type="text"
+            name="Course_Name"
+            value="{{ old('Course_Name', $course->Course_Name) }}"
+            required
+        >
+
+        <input
+            type="number"
+            step="0.01"
+            min="0"
+            name="Course_Fee"
+            value="{{ old('Course_Fee', $course->Course_Fee) }}"
+            required
+        >
+
+        <button
+            type="submit"
+            class="btn blue"
+        >
+            Update Course
+        </button>
+
+        <a
+            href="{{ route('courses.show', $course->Course_ID) }}"
+            class="btn gray"
+        >
+            Back
+        </a>
+    </form>
+
+</div>
+
 </body>
 </html>

@@ -1,99 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Students</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
 </head>
-<body>
-    {{-- @dump($categories) --}}
-        <h1 class="text-danger text-center"> All Categories</h1>
-      <table class="table table-stribe table-bordered w-75 m-auto mt-10">
-        <thead>
-            <th>Id</th>
-            <th>name</th>
-            <th>Description</th>
-            <th>action</th>
-        </thead>
-        <tbody>
-            @foreach ($categories as $category)
-            <tr>
-                <td>
-                    {{ $category['id'] }}
-                </td>
-                <td>
-                    {{ $category['name'] }}
-                </td>
-                <td>
-                    {{ $category['description'] }}
-                </td>
-                <td class="text-center">
-                  <a href="{{ route('categories.show',  $category->id) }}" class="text-decoration-none">  <button class="btn btn-warning">View</button></a>
-                    <button class="btn btn-info">Edit</button>
-                    <button class="btn btn-danger">Delete</button>
-                </td><!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>All Students</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-</head>
-<body>
-    {{-- @dump($students) --}}
-        <h1 class="text-danger text-center"> All Students</h1>
-      <table class="table table-striped table-bordered w-75 m-auto mt-10">
-        <thead>
-            <th>University ID</th>
-            <th>Name</th>
-            <th>Street</th>
-            <th>City</th>
-            <th>Zip</th>
-            <th>Action</th>
-        </thead>
-        <tbody>
-            @foreach ($students as $student)
-            <tr>
-                <td>
-                    {{ $student['University_ID'] }}
-                </td>
-                <td>
-                    {{ $student['name'] }}
-                </td>
-                <td>
-                    {{ $student['street'] }}
-                </td>
-                <td>
-                    {{ $student['city'] }}
-                </td>
-                <td>
-                    {{ $student['zip'] }}
-                </td>
-                <td class="text-center">
-                  <a href="{{ route('students.show', $student->University_ID) }}" class="text-decoration-none"> <button class="btn btn-warning">View</button></a>
-                    <button class="btn btn-info">Edit</button>
-                    <button class="btn btn-danger">Delete</button>
-                </td>
-            </tr>
+
+<body class="bg-light">
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h1>
+            Students
+        </h1>
+
+        <a
+            href="{{ route('students.create') }}"
+            class="btn btn-primary"
+        >
+            Add Student
+        </a>
+
+    </div>
+
+
+    @if(session('success'))
+
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+
+    @endif
+
+
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            @foreach($errors->all() as $error)
+
+                <div>
+                    {{ $error }}
+                </div>
+
             @endforeach
-        </tbody>
-    </table>
-       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
+
+        </div>
+
+    @endif
+
+
+    <div class="card shadow-sm">
+
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover mb-0">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>
+                                University ID
+                            </th>
+
+                            <th>
+                                Name
+                            </th>
+
+                            <th>
+                                Department
+                            </th>
+
+                            <th>
+                                Courses
+                            </th>
+
+                            <th>
+                                Phones
+                            </th>
+
+                            <th>
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        @forelse($students as $student)
+
+                            <tr>
+
+                                <td>
+                                    {{ $student->University_ID }}
+                                </td>
+
+                                <td>
+                                    {{ $student->name }}
+                                </td>
+
+                                <td>
+                                    {{ $student->department?->Department_Name ?? 'No Department' }}
+                                </td>
+
+                                <td>
+                                    {{ $student->courses->count() }}
+                                </td>
+
+                                <td>
+                                    {{ $student->phones->count() }}
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        href="{{ route('students.show', $student->University_ID) }}"
+                                        class="btn btn-sm btn-info text-white"
+                                    >
+                                        View
+                                    </a>
+
+
+                                    <a
+                                        href="{{ route('students.edit', $student->University_ID) }}"
+                                        class="btn btn-sm btn-warning"
+                                    >
+                                        Edit
+                                    </a>
+
+
+                                    <form
+                                        action="{{ route('students.destroy', $student->University_ID) }}"
+                                        method="POST"
+                                        style="display:inline;"
+                                    >
+
+                                        @csrf
+
+                                        @method('DELETE')
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this student?')"
+                                        >
+                                            Delete
+                                        </button>
+
+                                    </form>
+
+                                </td>
+
+                            </tr>
+
+                        @empty
+
+                            <tr>
+
+                                <td
+                                    colspan="6"
+                                    class="text-center"
+                                >
+                                    No students found.
+                                </td>
+
+                            </tr>
+
+                        @endforelse
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
 </body>
-</html>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous">
-    </script>
-</body>
+
 </html>
