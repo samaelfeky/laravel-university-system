@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Add User</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <style>
+    <title>Edit User</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+<style>
         body { font-family: Arial, sans-serif; }
 
         .box {
@@ -31,79 +36,104 @@
         .gray { background: #777; }
         .error { color: red; }
     </style>
-</head>
+    </head>
 
 <body>
 
-<div class="box">
+<div class="container mt-5">
 
-    <h1>Add User</h1>
+    <h1 class="mb-4">Edit User</h1>
 
-    @if ($errors->any())
-        <div class="error">
-            @foreach ($errors->all() as $error)
-                <div>{{ $error }}</div>
-            @endforeach
+    @if($errors->any())
+
+        <div class="alert alert-danger">
+
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+
         </div>
+
     @endif
 
-    <form
-        action="{{ route('users.store') }}"
-        method="POST"
-    >
+    <form action="{{ route('users.update', $user->id) }}"
+          method="POST">
+
         @csrf
+        @method('PUT')
 
-        <input
-            type="text"
-            name="name"
-            placeholder="Name"
-            value="{{ old('name') }}"
-            required
-        >
+        <div class="mb-3">
+            <label>Name</label>
 
-        <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value="{{ old('email') }}"
-            required
-        >
+            <input type="text"
+                   name="name"
+                   class="form-control"
+                   value="{{ old('name', $user->name) }}">
+        </div>
 
-        <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            required
-        >
+        <div class="mb-3">
+            <label>Email</label>
 
-        <select name="role" required>
-            <option value="">Select Role</option>
+            <input type="email"
+                   name="email"
+                   class="form-control"
+                   value="{{ old('email', $user->email) }}">
+        </div>
 
-            <option value="user">
-                User
-            </option>
+        <div class="mb-3">
+            <label>Phone</label>
 
-            <option value="admin">
-                Admin
-            </option>
-        </select>
+            <input type="text"
+                   name="phone"
+                   class="form-control"
+                   value="{{ old('phone', $user->phone) }}">
+        </div>
 
-        <button
-            type="submit"
-            class="btn blue"
-        >
-            Add User
+        <div class="mb-3">
+            <label>Password</label>
+
+            <input type="password"
+                   name="password"
+                   class="form-control">
+
+            <small class="text-muted">
+                Leave empty if you don't want to change the password.
+            </small>
+        </div>
+
+        <div class="mb-3">
+            <label>Role</label>
+
+            <select name="role" class="form-control">
+
+                <option value="user"
+                    {{ $user->role == 'user' ? 'selected' : '' }}>
+                    User
+                </option>
+
+                <option value="admin"
+                    {{ $user->role == 'admin' ? 'selected' : '' }}>
+                    Admin
+                </option>
+
+            </select>
+        </div>
+
+        <button class="btn btn-primary">
+            Update
         </button>
 
-        <a
-            href="{{ route('users.index') }}"
-            class="btn gray"
-        >
+        <a href="{{ route('users.index') }}"
+           class="btn btn-secondary">
             Back
         </a>
+
     </form>
 
 </div>
 
 </body>
 </html>
+ 

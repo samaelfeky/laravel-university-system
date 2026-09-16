@@ -198,6 +198,17 @@
                             </tr>
 
                         @endforelse
+                        @extends('layouts.app')
+
+@section('content')
+
+    <h1>Users</h1>
+
+    <a href="{{ route('users.create') }}" class="btn btn-primary">
+        Add User
+    </a>
+
+@endsection
 
                     </tbody>
 

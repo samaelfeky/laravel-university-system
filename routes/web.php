@@ -1,95 +1,67 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\MapController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\StudentController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\TeacherController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
-});
+})->name('welcome');
 
-Route::get('/map', [MapController::class, 'index'])
-    ->name('map.index');
+Route::get('/dashboard', function () {
+    if (auth()->user()->role === 'admin') {
+        return view('dashboard');
+    }
 
-Route::get('/map/{tableName}', [MapController::class, 'show'])
-    ->name('map.show');
+    return redirect()->route('user.dashboard');
+})->middleware('auth')->name('dashboard');
 
+Route::get('/user-dashboard', function () {
+    $user = auth()->user();
 
-/*
-|--------------------------------------------------------------------------
-| Students
-|--------------------------------------------------------------------------
-*/
+    $student = $user->load([
+        'student.department',
+        'student.courses.teachers',
+        'student.phones',
+    ])->student;
 
-Route::resource('students', StudentController::class);
+    return view('user-dashboard', compact('student'));
+})->middleware('auth')->name('user.dashboard');
+
+Route::resource('departments', DepartmentController::class)
+    ->middleware(['auth', 'isAdmin']);
+
+Route::resource('courses', CourseController::class)
+    ->middleware(['auth', 'isAdmin']);
+
+Route::resource('students', StudentController::class)
+    ->middleware(['auth', 'isAdmin']);
+
+Route::resource('teachers', TeacherController::class)
+    ->middleware(['auth', 'isAdmin']);
 
 Route::post(
     '/students/{student}/courses',
     [StudentController::class, 'addCourse']
-)->name('students.courses.add');
+)->middleware(['auth', 'isAdmin'])
+    ->name('students.courses.add');
 
 Route::delete(
     '/students/{student}/courses/{course}',
     [StudentController::class, 'removeCourse']
-)->name('students.courses.remove');
+)->middleware(['auth', 'isAdmin'])
+    ->name('students.courses.remove');
 
 Route::post(
     '/students/{student}/phones',
     [StudentController::class, 'addPhone']
-)->name('students.phones.add');
+)->middleware(['auth', 'isAdmin'])
+    ->name('students.phones.add');
 
 Route::delete(
     '/students/{student}/phones/{phoneNumber}',
     [StudentController::class, 'removePhone']
-)->name('students.phones.remove');
-
-
-/*
-|--------------------------------------------------------------------------
-| Teachers
-|--------------------------------------------------------------------------
-*/
-
-Route::resource('teachers', TeacherController::class);
-
-Route::post(
-    '/teachers/{teacher}/courses',
-    [TeacherController::class, 'addCourse']
-)->name('teachers.courses.add');
-
-Route::delete(
-    '/teachers/{teacher}/courses/{course}',
-    [TeacherController::class, 'removeCourse']
-)->name('teachers.courses.remove');
-
-
-/*
-|--------------------------------------------------------------------------
-| Courses
-|--------------------------------------------------------------------------
-*/
-
-Route::resource('courses', CourseController::class);
-
-
-/*
-|--------------------------------------------------------------------------
-| Departments
-|--------------------------------------------------------------------------
-*/
-
-Route::resource('departments', DepartmentController::class);
-
-
-/*
-|--------------------------------------------------------------------------
-| Users
-|--------------------------------------------------------------------------
-*/
-
-Route::resource('users', UserController::class);
+)->middleware(['auth', 'isAdmin'])
+    ->name('students.phones.remove');

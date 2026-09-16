@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>User Details</title>
 
-    <style>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+<style>
         body { font-family: Arial, sans-serif; }
 
         h1, h2 { text-align: center; }
@@ -47,136 +52,128 @@
 
         form { display: inline; }
     </style>
-</head>
+    </head>
 
 <body>
 
-<h1>User Details</h1>
+<div class="container mt-5">
 
-<div class="section">
+    <h1 class="mb-4">User Details</h1>
 
-    <table class="info">
+    <div class="card">
 
-        <tr>
-            <td>ID</td>
-            <td>{{ $user->id }}</td>
-        </tr>
+        <div class="card-body">
 
-        <tr>
-            <td>Name</td>
-            <td>{{ $user->name }}</td>
-        </tr>
+            <h3>{{ $user->name }}</h3>
 
-        <tr>
-            <td>Email</td>
-            <td>{{ $user->email }}</td>
-        </tr>
+            <p>
+                <strong>ID:</strong>
+                {{ $user->id }}
+            </p>
 
-        <tr>
-            <td>Role</td>
-            <td>{{ $user->role }}</td>
-        </tr>
+            <p>
+                <strong>Email:</strong>
+                {{ $user->email }}
+            </p>
 
-    </table>
+            <p>
+                <strong>Phone:</strong>
+                {{ $user->phone }}
+            </p>
 
-</div>
+            <p>
+                <strong>Role:</strong>
+                {{ $user->role }}
+            </p>
 
-@if ($user->student)
+            @if($user->student)
 
-<div class="section">
+                <hr>
 
-    <h2>Student</h2>
+                <h4>Student Information</h4>
 
-    <table>
+                @if($user->student->department)
+                    <p>
+                        <strong>Department:</strong>
+                        {{ $user->student->department->name }}
+                    </p>
+                @endif
 
-        <tr>
-            <th>University ID</th>
-            <td>{{ $user->student->University_ID }}</td>
-        </tr>
+                <h5>Courses</h5>
 
-        <tr>
-            <th>Name</th>
-            <td>{{ $user->student->name }}</td>
-        </tr>
+                @forelse($user->student->courses as $course)
 
-        <tr>
-            <th>Department</th>
-            <td>
-                {{ $user->student->department?->Department_Name ?? 'No Department' }}
-            </td>
-        </tr>
+                    <span class="badge bg-primary">
+                        {{ $course->name }}
+                    </span>
 
-    </table>
+                @empty
 
-</div>
+                    <p>No courses</p>
 
-@endif
+                @endforelse
 
-@if ($user->teacher)
+                <h5 class="mt-3">Phones</h5>
 
-<div class="section">
+                @forelse($user->student->phones as $phone)
 
-    <h2>Teacher</h2>
+                    <p>{{ $phone->phone }}</p>
 
-    <table>
+                @empty
 
-        <tr>
-            <th>Teacher ID</th>
-            <td>{{ $user->teacher->Teacher_ID }}</td>
-        </tr>
+                    <p>No phones</p>
 
-        <tr>
-            <th>Name</th>
-            <td>{{ $user->teacher->name }}</td>
-        </tr>
+                @endforelse
 
-        <tr>
-            <th>Type</th>
-            <td>{{ $user->teacher->type ?? 'N/A' }}</td>
-        </tr>
+            @endif
 
-        <tr>
-            <th>Department</th>
-            <td>
-                {{ $user->teacher->department?->Department_Name ?? 'No Department' }}
-            </td>
-        </tr>
 
-    </table>
+            @if($user->teacher)
 
-</div>
+                <hr>
 
-@endif
+                <h4>Teacher Information</h4>
 
-<div class="section">
+                @if($user->teacher->department)
+                    <p>
+                        <strong>Department:</strong>
+                        {{ $user->teacher->department->name }}
+                    </p>
+                @endif
 
-    <a
-        href="{{ route('users.index') }}"
-        class="btn gray"
-    >
-        Back
-    </a>
+                <h5>Courses</h5>
 
-    <a
-        href="{{ route('users.edit', $user->id) }}"
-        class="btn blue"
-    >
-        Edit
-    </a>
+                @forelse($user->teacher->courses as $course)
 
-    <form
-        action="{{ route('users.destroy', $user->id) }}"
-        method="POST"
-    >
+                    <span class="badge bg-success">
+                        {{ $course->name }}
+                    </span>
 
-        @csrf
-        @method('DELETE')
+                @empty
 
-        <button class="btn red">
-            Delete
-        </button>
+                    <p>No courses</p>
 
-    </form>
+                @endforelse
+
+            @endif
+
+        </div>
+
+    </div>
+
+    <div class="mt-3">
+
+        <a href="{{ route('users.edit', $user->id) }}"
+           class="btn btn-warning">
+            Edit
+        </a>
+
+        <a href="{{ route('users.index') }}"
+           class="btn btn-secondary">
+            Back
+        </a>
+
+    </div>
 
 </div>
 

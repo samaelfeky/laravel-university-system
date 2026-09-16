@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Teacher;
 use App\Models\Department;
-use App\Models\Course;
+use App\Models\Teacher;
 use Illuminate\Http\Request;
 
 class TeacherController extends Controller
@@ -23,73 +22,82 @@ class TeacherController extends Controller
     {
         $departments = Department::all();
 
-        return view(
-            'teachers.create',
-            compact('departments')
-        );
+        return view('teachers.create', compact('departments'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'Teacher_ID' => 'required|unique:teachers,Teacher_ID',
-            'name' => 'required|string|max:255',
-            'Department_ID' => 'nullable|exists:departments,Department_ID',
-            'user_id' => 'nullable|exists:users,id',
+            'Teacher_ID' => [
+                'required',
+                'string',
+                'max:255',
+                'unique:teachers,Teacher_ID',
+            ],
+            'name' => ['required', 'string', 'max:255'],
+            'Department_ID' => [
+                'nullable',
+                'exists:departments,Department_ID',
+            ],
+            'user_id' => [
+                'nullable',
+                'exists:users,id',
+            ],
         ]);
 
         Teacher::create($validated);
 
         return redirect()
             ->route('teachers.index')
-            ->with('success', 'Teacher added successfully.');
+            ->with('success', 'Teacher created successfully.');
     }
 
-    public function show($teacher)
+    public function show(Teacher $teacher)
     {
-        $teacher = Teacher::with([
+        $teacher->load([
             'department',
-            'user',
-            'courses.students',
-        ])->findOrFail($teacher);
+            'courses',
+        ]);
 
-        $availableCourses = Course::whereNotIn(
-            'Course_ID',
-            $teacher->courses->pluck('Course_ID')
-        )->get();
-
-        return view(
-            'teachers.show',
-            compact(
-                'teacher',
-                'availableCourses'
-            )
-        );
+        return view('teachers.show', compact('teacher'));
     }
 
-    public function edit($teacher)
+    public function edit(Teacher $teacher)
     {
-        $teacher = Teacher::findOrFail($teacher);
-
         $departments = Department::all();
 
-        return view(
-            'teachers.edit',
-            compact(
-                'teacher',
-                'departments'
-            )
-        );
+        return view('teachers.edit', compact(
+            'teacher',
+            'departments'
+        ));
     }
 
-    public function update(Request $request, $teacher)
+    public function update(Request $request, Teacher $teacher)
     {
-        $teacher = Teacher::findOrFail($teacher);
-
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'Department_ID' => 'nullable|exists:departments,Department_ID',
-            'user_id' => 'nullable|exists:users,id',
+            'Teacher_ID' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:255',
+                'unique:teachers,Teacher_ID,' . $teacher->Teacher_ID . ',Teacher_ID',
+            ],
+            'name' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:255',
+            ],
+            'Department_ID' => [
+                'sometimes',
+                'nullable',
+                'exists:departments,Department_ID',
+            ],
+            'user_id' => [
+                'sometimes',
+                'nullable',
+                'exists:users,id',
+            ],
         ]);
 
         $teacher->update($validated);
@@ -99,10 +107,8 @@ class TeacherController extends Controller
             ->with('success', 'Teacher updated successfully.');
     }
 
-    public function destroy($teacher)
+    public function destroy(Teacher $teacher)
     {
-        $teacher = Teacher::findOrFail($teacher);
-
         $teacher->delete();
 
         return redirect()

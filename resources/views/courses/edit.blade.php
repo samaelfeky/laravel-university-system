@@ -1,9 +1,17 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Course</title>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
-    <style>
+<head>
+
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Edit User</title>
+<style>
         body { font-family: Arial, sans-serif; }
 
         .box {
@@ -31,61 +39,206 @@
         .gray { background: #777; }
         .error { color: red; }
     </style>
+    <x-cssbootstrap></x-cssbootstrap>
+
 </head>
 
 <body>
 
-<div class="box">
+    <x-navbarcomponent></x-navbarcomponent>
 
-    <h1>Edit Course</h1>
 
-    @if ($errors->any())
-        <div class="error">
-            @foreach ($errors->all() as $error)
-                <div>{{ $error }}</div>
-            @endforeach
-        </div>
-    @endif
+    <div class="container mt-5">
 
-    <form
-        action="{{ route('courses.update', $course->Course_ID) }}"
-        method="POST"
-    >
-        @csrf
-        @method('PUT')
+        <h1 class="mb-4">
+            Edit User
+        </h1>
 
-        <input
-            type="text"
-            name="Course_Name"
-            value="{{ old('Course_Name', $course->Course_Name) }}"
-            required
+
+        @if ($errors->any())
+
+            <div class="alert alert-danger">
+
+                <ul class="mb-0">
+
+                    @foreach ($errors->all() as $error)
+
+                        <li>
+                            {{ $error }}
+                        </li>
+
+                    @endforeach
+
+                </ul>
+
+            </div>
+
+        @endif
+
+
+        <form
+            action="{{ route('users.update', $user->id) }}"
+            method="POST"
         >
 
-        <input
-            type="number"
-            step="0.01"
-            min="0"
-            name="Course_Fee"
-            value="{{ old('Course_Fee', $course->Course_Fee) }}"
-            required
-        >
+            @csrf
 
-        <button
-            type="submit"
-            class="btn blue"
-        >
-            Update Course
-        </button>
+            @method('PUT')
 
-        <a
-            href="{{ route('courses.show', $course->Course_ID) }}"
-            class="btn gray"
-        >
-            Back
-        </a>
-    </form>
 
-</div>
+            {{-- Name --}}
+
+            <div class="mb-3">
+
+                <label
+                    for="name"
+                    class="form-label"
+                >
+                    Name
+                </label>
+
+                <input
+                    type="text"
+                    name="name"
+                    id="name"
+                    class="form-control"
+                    value="{{ old('name', $user->name) }}"
+                >
+
+            </div>
+
+
+            {{-- Email --}}
+
+            <div class="mb-3">
+
+                <label
+                    for="email"
+                    class="form-label"
+                >
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    name="email"
+                    id="email"
+                    class="form-control"
+                    value="{{ old('email', $user->email) }}"
+                >
+
+            </div>
+
+
+            {{-- Password --}}
+
+            <div class="mb-3">
+
+                <label
+                    for="password"
+                    class="form-label"
+                >
+                    New Password
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    class="form-control"
+                >
+
+                <small class="text-muted">
+                    Leave empty if you do not want to change the password.
+                </small>
+
+            </div>
+
+
+            {{-- Password Confirmation --}}
+
+            <div class="mb-3">
+
+                <label
+                    for="password_confirmation"
+                    class="form-label"
+                >
+                    Confirm New Password
+                </label>
+
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    id="password_confirmation"
+                    class="form-control"
+                >
+
+            </div>
+
+
+            {{-- Role --}}
+
+            <div class="mb-3">
+
+                <label
+                    for="role"
+                    class="form-label"
+                >
+                    Role
+                </label>
+
+                <select
+                    name="role"
+                    id="role"
+                    class="form-select"
+                >
+
+                    <option value="">
+                        Select Role
+                    </option>
+
+                    <option
+                        value="user"
+                        {{ old('role', $user->role) == 'user' ? 'selected' : '' }}
+                    >
+                        User
+                    </option>
+
+                    <option
+                        value="admin"
+                        {{ old('role', $user->role) == 'admin' ? 'selected' : '' }}
+                    >
+                        Admin
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Update User
+            </button>
+
+
+            <a
+                href="{{ route('users.show', $user->id) }}"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+        </form>
+
+    </div>
+
+
+    <x-jsbootstrap></x-jsbootstrap>
 
 </body>
+
 </html>
+    
