@@ -65,3 +65,6 @@ Route::delete(
     [StudentController::class, 'removePhone']
 )->middleware(['auth', 'isAdmin'])
     ->name('students.phones.remove');
+Route::view('/chatbot', 'chatbot.index')
+    ->middleware('auth')
+    ->name('chatbot');
